@@ -1,0 +1,44 @@
+{
+  "name": "mostly-rest",
+  "version": "1.0.0",
+  "description": "MostlyJS microservice feathers package",
+  "author": "Forafish",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "npm run compile",
+    "publish": "git push origin --tags && npm run changelog && git push origin",
+    "changelog": "github_changelog_generator && git add CHANGELOG.md && git commit -am \"Updating changelog\"",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish",
+    "compile": "rimraf -rf lib/ && babel -d lib/ src/",
+    "watch": "babel --watch -d lib/ src/",
+    "lint": "eslint-if-supported semistandard --fix",
+    "mocha": "mocha --opts mocha.opts",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --opts mocha.opts",
+    "test": "npm run compile && npm run lint && npm run coverage"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "bloomrun": "^3.0.4",
+    "feathers-memory": "^1.1.0",
+    "heavy": "^4.0.3",
+    "lodash": "^4.17.4",
+    "nats": "^0.7.16",
+    "nats-hemera": "^1.0.1",
+    "rubberduck": "^1.1.1",
+    "tinysonic": "^1.2.0",
+    "uberproto": "^1.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-root-import": "^5.1.0",
+    "babel-preset-env": "^1.4.0",
+    "eslint-if-supported": "^1.0.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.3.0",
+    "rimraf": "^2.6.1"
+  }
+}
