@@ -51,7 +51,7 @@ export default {
         topic: `feathers.${location}`,
         cmd: method
       }, function (req, cb) {
-        debug(`service called ${location}->${req.cmd} with ${req.args}, %j`, req.params);
+        debug(`service called ${req.topic}->${req.cmd} with ${req.args}, %j`, req.params);
         protoService[req.cmd]
           .apply(protoService, req.args.concat([req.params]))
           .then(data => cb(null, data))
