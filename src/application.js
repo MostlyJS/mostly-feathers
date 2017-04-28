@@ -48,7 +48,7 @@ export default {
     // Register the service
     this.methods.forEach(method => {
       this.trans.add({
-        topic: `service:${location}`,
+        topic: `feathers.${location}`,
         cmd: method
       }, function (req, cb) {
         debug(`service called ${location}->${req.cmd} with ${req.args}, %j`, req.params);
