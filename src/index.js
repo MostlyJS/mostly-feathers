@@ -1,5 +1,3 @@
-if (!global._babelPolyfill) { require('babel-polyfill'); }
-
 import feathers from './feathers';
 
 export default function createApplication (...args) {

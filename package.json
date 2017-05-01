@@ -1,6 +1,6 @@
 {
   "name": "mostly-feathers",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MostlyJS microservice integration with feathers",
   "author": "Forafish",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "compile": "rimraf -rf lib/ && babel -d lib/ src/",
+    "compile": "rimraf -rf lib/ && babel --source-maps -d lib/ src/",
     "watch": "babel --watch -d lib/ src/",
     "lint": "eslint-if-supported semistandard --fix",
     "mocha": "mocha --opts mocha.opts",
