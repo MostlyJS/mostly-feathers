@@ -1,6 +1,6 @@
 {
   "name": "mostly-feathers",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MostlyJS microservice integration with feathers",
   "author": "Forafish",
   "license": "MIT",
@@ -40,7 +40,6 @@
     "gulp-babel": "^6.1.2",
     "gulp-changed": "^3.0.0",
     "gulp-eslint": "^3.0.1",
-    "gulp-livereload": "^3.8.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-sourcemaps": "^2.6.0",
     "istanbul": "^0.4.5",
