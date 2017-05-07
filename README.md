@@ -49,7 +49,7 @@ That's all, the service will register itself with NATS and can be called remotel
 
 ## RESTful Gateway
 
-To expose the service as RESTful api, you need only setup a simple express gateway server using [mostly-feathers-rest](http://https://github.com/MostlyJS/mostly-feathers-rest)
+To expose the service as RESTful api, you need only setup a simple express gateway server using [mostly-feathers-rest](https://github.com/MostlyJS/mostly-feathers-rest)
 
 # License
 
