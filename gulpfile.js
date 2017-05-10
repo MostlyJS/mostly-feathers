@@ -16,9 +16,7 @@ gulp.task('compile', () => {
   return gulp.src('src/**/*.js')
     .pipe(changed('lib'))
     .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ['env']
-    }))
+    .pipe(babel())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('lib'));
 });
