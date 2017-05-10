@@ -24,7 +24,7 @@ gulp.task('compile', () => {
 });
 
 gulp.task('watch', () => {
-  gulp.watch('src/**/*.js',['lint', 'compile']);
+  gulp.watch('src/**/*.js', ['lint', 'compile']);
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['watch', 'lint', 'compile']);
