@@ -20,5 +20,8 @@
     "node": true,
     "mocha": true,
     "mongo": true
-  }
+  },
+  "plugins": [
+    "promise"
+  ]
 }

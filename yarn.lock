@@ -1119,6 +1119,10 @@ eslint-if-supported@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/eslint-if-supported/download/eslint-if-supported-1.0.1.tgz#c2a6583b134a2d4d838eae35ee4b8bc8d37e856e"
 
+eslint-plugin-promise@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-3.5.0.tgz#78fbb6ffe047201627569e85a6c5373af2a68fca"
+
 eslint@^3.0.0:
   version "3.19.0"
   resolved "http://registry.npm.taobao.org/eslint/download/eslint-3.19.0.tgz#c8fc6201c7f40dd08941b87c085767386a679acc"
@@ -2056,10 +2060,6 @@ json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "http://registry.npm.taobao.org/json-stringify-safe/download/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
-json3@3.2.4:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/json3/-/json3-3.2.4.tgz#689c589e7ca9340c7ee4949e0d105bc5bf159f21"
-
 json3@3.3.2:
   version "3.3.2"
   resolved "http://registry.npm.taobao.org/json3/download/json3-3.3.2.tgz#3c0434743df93e2f5c42aee7b19bcb483575f4e1"
@@ -2646,12 +2646,6 @@ pinkie@^2.0.0:
 pluralize@^1.2.1:
   version "1.2.1"
   resolved "http://registry.npm.taobao.org/pluralize/download/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
-
-polyfill@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/polyfill/-/polyfill-0.1.0.tgz#ded507cb76802804834b3385dfd3ba2e51004c3d"
-  dependencies:
-    json3 "3.2.4"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
