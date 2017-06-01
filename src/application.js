@@ -1,6 +1,7 @@
 import makeDebug from 'debug';
 import { stripSlashes } from 'feathers-commons';
 import Uberproto from 'uberproto';
+import route from './route';
 import mixins from './mixins/index';
 
 const debug = makeDebug('mostly:feathers:application');
@@ -10,18 +11,74 @@ const Proto = Uberproto.extend({
   create: null
 });
 
+// Adapts an express style handler to uroute
+function adapt(fn) {
+  return function adapter(ctx){
+    return Promise.resolve(fn(ctx, ctx.response, ctx.next)).then(function(x){
+      return x === undefined && fn.length < 3 ? false : x
+    })
+  }
+}
+
+// simplified version of `extend` that does not do deep cloning, but does
+// accept an optional array of key names to skip as it's first argument.
+function extend() {
+  var args = [].splice.call(arguments, []), except, out = args.shift()
+  if (Array.isArray(out)) {except = out; out = args.shift()}
+  for (var i=0,src; i<args.length; i++) {
+    src = args[i]
+    if (src !== undefined && src !== null) {
+      for (var key in src) {
+        if (Array.isArray(except) && except.indexOf(key) !== -1) continue
+        out[key] = src[key]
+      }
+    }
+  }
+  return out;
+}
+
 export default {
-  init (trans) {
+  init(trans) {
     Object.assign(this, {
       trans,
       methods,
       mixins: mixins(),
+      mountpath: '/',
+      routes: route('/', []),
       services: {},
+      settings: {},
       _setup: false
     });
   },
 
-  service (location, service, options = {}) {
+  get(name) {
+    return this.settings[name];
+  },
+
+  set(name, value) {
+    this.settings[name] = value;
+    return this;
+  },
+
+  disable(name) {
+    this.settings[name] = false;
+    return this;
+  },
+
+  disabled(name) {
+    return !this.settings[name];
+  },
+
+  enable(name) {
+    this.settings[name] = true;
+    return this;
+  },
+
+  enabled(name) {
+    return !!this.settings[name];
+  },
+
+  service(location, service, options = {}) {
     location = stripSlashes(location);
 
     if (!service) {
@@ -50,8 +107,9 @@ export default {
       this.trans.add({
         topic: `feathers.${location}`,
         cmd: method
-      }, function (req, cb) {
-        debug(`service called ${req.topic}->${req.cmd} with ${req.args}, %j`, req.params);
+      }, (req, cb) => {
+        debug(`service called ${req.topic}->${req.cmd}, path = ${req.path}, args = ${req.args}, params = %j`, req.params);
+        route.match(this.routes, extend(['host'], {}, req, { response: null }))
         protoService[req.cmd]
           .apply(protoService, req.args.concat([req.params]))
           .then(data => cb(null, data))
@@ -68,7 +126,7 @@ export default {
     return (this.services[location] = protoService);
   },
 
-  use (location) {
+  use(location) {
     let service;
     let middleware = Array.from(arguments)
       .slice(1)
@@ -90,9 +148,27 @@ export default {
       (service && typeof service[name] === 'function')
     );
 
+    const handler = (path, fn) => {
+      if (!fn) {
+        fn = path;
+        path = undefined;
+        if (!fn) return;
+      }
+      if (fn.routes) {  // fn is a sub-app
+        if (!path) path = '/';
+        fn.mountpath = path;
+        fn.parent = this;
+        this.routes.children.push(route(path, { __handler: fn }, fn.routes.children));
+        fn.emit('mount', this);
+      } else {
+        if (! path) path = fn.length >= 3 ? '*' : '/'
+        this.routes.children.push(route(path, { __handler: fn }, adapt(fn)));
+      }
+    };
+
     // Check for service (any object with at least one service method)
     if (hasMethod(['handle', 'set']) || !hasMethod(this.methods.concat('setup'))) {
-      return this._super.apply(this, arguments);
+      return handler.apply(this, arguments);
     }
 
     // Any arguments left over are other middleware that we want to pass to the providers
@@ -101,7 +177,7 @@ export default {
     return this;
   },
 
-  setup () {
+  setup() {
     // Setup each service (pass the app so that they can look up other services etc.)
     Object.keys(this.services).forEach(path => {
       const service = this.services[path];
@@ -117,10 +193,8 @@ export default {
     return this;
   },
 
-  configure (fn) {
-    fn.call(this);
-
+  configure(fn) {
+    fn && fn.call(this, this);
     return this;
   }
-
 };

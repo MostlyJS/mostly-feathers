@@ -26,6 +26,7 @@
     "babel-polyfill": "^6.23.0",
     "debug": "^2.6.6",
     "feathers-commons": "^0.8.7",
+    "path-to-regexp": "^1.7.0",
     "rubberduck": "^1.1.1",
     "uberproto": "^1.2.0"
   },
