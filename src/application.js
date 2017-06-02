@@ -1,6 +1,7 @@
 import makeDebug from 'debug';
 import { stripSlashes } from 'feathers-commons';
 import Uberproto from 'uberproto';
+import util from 'util';
 import route from './route';
 import mixins from './mixins/index';
 
@@ -108,7 +109,7 @@ export default {
         topic: `feathers.${location}`,
         cmd: method
       }, (req, cb) => {
-        debug(`service called ${req.topic}->${req.cmd}, path = ${req.path}, args = ${req.args}, params = %j`, req.params);
+        debug(`service called ${req.topic}->${req.cmd}: `, util.inspect(req));
         route.match(this.routes, extend(['host'], {}, req, { response: null }))
         protoService[req.cmd]
           .apply(protoService, req.args.concat([req.params]))
