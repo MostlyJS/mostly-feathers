@@ -4,7 +4,7 @@ import Uberproto from 'uberproto';
 import util from 'util';
 import route from './route';
 import mixins from './mixins/index';
-
+import DefaultService from './service';
 const debug = makeDebug('mostly:feathers:application');
 const methods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
 
@@ -85,8 +85,13 @@ export default {
     if (!service) {
       const current = this.services[location];
 
-      if (typeof current === 'undefined' && typeof this.defaultService === 'function') {
-        return this.service(location, this.defaultService(location), options);
+      if (typeof current === 'undefined') {
+        let defaultService = new DefaultService({
+          name: location,
+          trans: this.trans
+        });
+
+        return (this.services[location] = defaultService);
       }
 
       return current;
@@ -110,7 +115,8 @@ export default {
         cmd: method
       }, (req, cb) => {
         debug(`service called ${req.topic}->${req.cmd}: `, util.inspect(req));
-        route.match(this.routes, extend(['host'], {}, req, { response: null }))
+        route.match(this.routes, extend(['host'],
+          { path: '', feathers: {} }, req, { response: null }))
         protoService[req.cmd]
           .apply(protoService, req.args.concat([req.params]))
           .then(data => cb(null, data))
@@ -162,13 +168,14 @@ export default {
         this.routes.children.push(route(path, { __handler: fn }, fn.routes.children));
         fn.emit('mount', this);
       } else {
-        if (! path) path = fn.length >= 3 ? '*' : '/'
+        if (!path) path = fn.length >= 3 ? '*' : '/'
         this.routes.children.push(route(path, { __handler: fn }, adapt(fn)));
       }
     };
 
     // Check for service (any object with at least one service method)
     if (hasMethod(['handle', 'set']) || !hasMethod(this.methods.concat('setup'))) {
+      debug('middleware handler', arguments);
       return handler.apply(this, arguments);
     }
 
@@ -196,6 +203,12 @@ export default {
 
   configure(fn) {
     fn && fn.call(this, this);
+    return this;
+  },
+
+  start() {
+    this.setup();
+    debug('Mostly-feathers microservice application started');
     return this;
   }
 };

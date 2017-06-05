@@ -1277,6 +1277,12 @@ feathers-commons@^0.8.7:
   version "0.8.7"
   resolved "http://registry.npm.taobao.org/feathers-commons/download/feathers-commons-0.8.7.tgz#11c6f25b537745a983e8d61552d7db8932d53782"
 
+feathers-errors@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/feathers-errors/-/feathers-errors-2.8.1.tgz#98fc85ad4f48c12d25eca3c2556beea2c0394b8b"
+  dependencies:
+    debug "^2.2.0"
+
 figures@^1.3.5:
   version "1.7.0"
   resolved "http://registry.npm.taobao.org/figures/download/figures-1.7.0.tgz#cbe1e3affcf1cd44b80cadfed28dc793a9701d2e"
@@ -3300,12 +3306,6 @@ undefsafe@0.0.3:
 unique-stream@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/unique-stream/download/unique-stream-1.0.0.tgz#d59a4a75427447d9aa6c91e70263f8d26a4b104b"
-
-universal-router@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/universal-router/-/universal-router-3.2.0.tgz#4590ee42f55e2a08188c632070d90675bb2fa40f"
-  dependencies:
-    path-to-regexp "^1.7.0"
 
 update-notifier@0.5.0:
   version "0.5.0"

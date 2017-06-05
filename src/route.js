@@ -1,34 +1,53 @@
-/*
- * uroute © 2016 by Stijn de Witt, some rights reserved.
- * License: CC-BY-4.0
- *
- * Based on Universal Router (https://www.kriasoft.com/universal-router/)
- * Copyright © 2015-2016 Konstantin Tarkus, Kriasoft LLC. All rights reserved.
- * license: MIT. SEE LICENSE-universal-router.txt.
- */
+import makeDebug from 'debug';
+import pathToRegExp from 'path-to-regexp';
 
-var pathToRegExp = require('path-to-regexp')
+const debug = makeDebug('mostly:feathers:route');
 
 function route() {
   var args = Array.prototype.slice.call(arguments),
       next = args.shift(),
-      path, ctx = {}, action, children
-  if (typeof next == 'string' || next instanceof String) {path = next.toString(); next = args.shift()}
-  if (typeof next == 'object' && (! Array.isArray(next))) {ctx = next; next = args.shift()}
-  if (typeof next == 'function') {action = next; next = args.shift()}
-  if (typeof next == 'object' && (Array.isArray(next))) {children = next; next = null}
-  else if (next) {children = [next]}
-  if (args.length) {children = (children || []).concat(args)}
-  var result = path ? extend({}, ctx, {path:path}) : extend({}, ctx)
-  if (! result.path) {result.path = '/'}
-  if (typeof action == 'function') {result.action = action}
-  else if (children) {result.action = function next(ctx) {return ctx.next()}}
-  if (typeof children == 'object') {result.children = children}
-  return result
+      path, ctx = {}, action, children;
+
+  if (typeof next == 'string' || next instanceof String) {
+    path = next.toString();
+    next = args.shift()
+  }
+  if (typeof next == 'object' && (!Array.isArray(next))) {
+    ctx = next;
+    next = args.shift();
+  }
+  if (typeof next == 'function') {
+    action = next;
+    next = args.shift();
+  }
+  if (typeof next == 'object' && (Array.isArray(next))) {
+    children = next;
+    next = null;
+  } else if (next) {
+    children = [next];
+  }
+  if (args.length) {
+    children = (children || []).concat(args);
+  }
+  var result = path? extend({}, ctx, {path:path}) : extend({}, ctx);
+  if (!result.path) {
+    result.path = '/';
+  }
+  if (typeof action == 'function') {
+    result.action = action;
+  } else if (children) {
+    result.action = function next(ctx) {
+      return ctx.next();
+    }
+  }
+  if (typeof children == 'object') {
+    result.children = children;
+  }
+  return result;
 }
 
-
 function match(routes, ctx) {
+  debug('match', ctx);
   var context = typeof ctx === 'string' || ctx instanceof String ? {path: ctx} : ctx,
       root = Array.isArray(routes) ? { path: '/', children: routes } : routes,
       errorRoute = root.children && root.children.filter(function(x){return x.path === '/error'})[0],
