@@ -15,23 +15,26 @@ const Proto = Uberproto.extend({
 // Adapts an express style handler to uroute
 function adapt(fn) {
   return function adapter(ctx){
-    return Promise.resolve(fn(ctx, ctx.response, ctx.next)).then(function(x){
-      return x === undefined && fn.length < 3 ? false : x
-    })
-  }
+    return Promise.resolve(fn(ctx, ctx.response, ctx.next)).then(x => {
+      return x === undefined && fn.length < 3 ? false : x;
+    });
+  };
 }
 
 // simplified version of `extend` that does not do deep cloning, but does
 // accept an optional array of key names to skip as it's first argument.
 function extend() {
-  var args = [].splice.call(arguments, []), except, out = args.shift()
-  if (Array.isArray(out)) {except = out; out = args.shift()}
+  var args = [].splice.call(arguments, []), except, out = args.shift();
+  if (Array.isArray(out)) {
+    except = out;
+    out = args.shift();
+  }
   for (var i=0,src; i<args.length; i++) {
-    src = args[i]
+    src = args[i];
     if (src !== undefined && src !== null) {
       for (var key in src) {
-        if (Array.isArray(except) && except.indexOf(key) !== -1) continue
-        out[key] = src[key]
+        if (Array.isArray(except) && except.indexOf(key) !== -1) continue;
+        out[key] = src[key];
       }
     }
   }
@@ -114,9 +117,15 @@ export default {
         topic: `feathers.${location}`,
         cmd: method
       }, (req, cb) => {
-        debug(`service called ${req.topic}->${req.cmd}: `, util.inspect(req));
+        debug(`service \'${service}\' called`);
+        debug(` => topic  \'${req.topic}\'`);
+        debug(` => cmd  \'${req.cmd}\'`);
+        debug(` => path \'${req.path}\'`);
+        debug(` => args %j`, req.args);
+        debug(` => params %j`, req.params);
+
         route.match(this.routes, extend(['host'],
-          { path: '', feathers: {} }, req, { response: null }))
+          { path: '', feathers: {} }, req, { response: null }));
         protoService[req.cmd]
           .apply(protoService, req.args.concat([req.params]))
           .then(data => cb(null, data))
@@ -168,7 +177,7 @@ export default {
         this.routes.children.push(route(path, { __handler: fn }, fn.routes.children));
         fn.emit('mount', this);
       } else {
-        if (!path) path = fn.length >= 3 ? '*' : '/'
+        if (!path) path = fn.length >= 3 ? '*' : '/';
         this.routes.children.push(route(path, { __handler: fn }, adapt(fn)));
       }
     };

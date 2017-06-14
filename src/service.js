@@ -94,4 +94,22 @@ export default class DefaultService {
       params: params
     });
   }
+
+  action(method, action, id, params = {}) {
+    if (['get', 'put', 'patch'].indexOf(method) === -1) {
+      return Promise.reject(new Error(`method for 'action' must be one of get/put/patch`));
+    }
+    if (!action) {
+      return Promise.reject(new Error(`action for 'action' can not be undefined`));
+    }
+    if (typeof id === 'undefined') {
+      return Promise.reject(new Error(`id for 'action' can not be undefined`));
+    }
+
+    return this.request({
+      method: method,
+      args: [id],
+      params: params
+    });
+  }
 }
