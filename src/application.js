@@ -117,7 +117,7 @@ export default {
         topic: `feathers.${location}`,
         cmd: method
       }, (req, cb) => {
-        debug(`service \'${service}\' called`);
+        debug(`service \'${service.name}\' called`);
         debug(` => topic  \'${req.topic}\'`);
         debug(` => cmd  \'${req.cmd}\'`);
         debug(` => path \'${req.path}\'`);
