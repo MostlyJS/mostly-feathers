@@ -1,3 +1,4 @@
+import assert from 'assert';
 import makeDebug from 'debug';
 import { stripSlashes } from 'feathers-commons';
 import Uberproto from 'uberproto';
@@ -5,6 +6,7 @@ import util from 'util';
 import route from './route';
 import mixins from './mixins/index';
 import DefaultService from './service';
+
 const debug = makeDebug('mostly:feathers:application');
 const methods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
 
@@ -101,6 +103,7 @@ export default {
     }
 
     let protoService = Proto.extend(service);
+    protoService.name = protoService.name || location;
 
     debug(`Registering new service at \`${location}\``);
 
@@ -113,24 +116,35 @@ export default {
 
     // Register the service
     this.methods.forEach(method => {
-      this.trans.add({
-        topic: `feathers.${location}`,
-        cmd: method
-      }, (req, cb) => {
-        debug(`service \'${service.name}\' called`);
-        debug(` => topic  \'${req.topic}\'`);
-        debug(` => cmd  \'${req.cmd}\'`);
-        debug(` => path \'${req.path}\'`);
-        debug(` => args %j`, req.args);
-        debug(` => params %j`, req.params);
+      if (protoService[method]) {
+        debug(` => method \'${protoService.name}.${method}\'`);
+        this.trans.add({
+          topic: `feathers.${location}`,
+          cmd: method
+        }, (req, cb) => {
+          debug(`service \'${protoService.name}\' called`);
+          debug(` => topic  \'${req.topic}\'`);
+          debug(` => cmd  \'${req.cmd}\'`);
+          debug(` => path \'${req.path}\'`);
+          debug(` => args %j`, req.args);
+          debug(` => params %j`, req.params);
 
-        route.match(this.routes, extend(['host'],
-          { path: '', feathers: {} }, req, { response: null }));
-        protoService[req.cmd]
-          .apply(protoService, req.args.concat([req.params]))
-          .then(data => cb(null, data))
-          .catch(cb);
-      });
+          route.match(this.routes, extend(['host'],
+            { path: '', feathers: {} }, req, { response: null }));
+          protoService[req.cmd]
+            .apply(protoService, req.args.concat([req.params]))
+            .then(data => {
+              debug(`service \'${protoService.name}\' result`);
+              debug(` => data %j`, data);
+              return cb(null, data);
+            })
+            .catch(err => {
+              debug(`service \'${protoService.name}\' result`);
+              debug(` => error %j`, err);
+              return cb(err);
+            });
+        });
+      }
     });
 
     // If we ran setup already, set this service up explicitly

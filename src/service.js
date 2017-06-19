@@ -7,8 +7,8 @@ const debug = makeDebug('mostly:feathers:default-service');
 
 export default class DefaultService {
   constructor (settings) {
+    this.id = settings.id || '_id';
     this.name = stripSlashes(settings.name);
-    this.options = settings.options;
     this.trans = settings.trans;
   }
 
@@ -22,16 +22,17 @@ export default class DefaultService {
         path: '',
         feathers: {}
       };
-      debug('service request', pattern);
+      debug('default service request', pattern);
       this.trans.act(pattern, (err, data) => {
-        debug(' ==> service response:', err, data);
+        debug(' => default service response:', err, data);
         if (err) return reject(err.cause || err);
         resolve(data);
       });
     });
   }
 
-  find(params = {}) {
+  find(params = {}, action) {
+    if (action) params.__action = action;
     return this.request({
       method: 'find',
       args: [],
@@ -39,11 +40,12 @@ export default class DefaultService {
     });
   }
 
-  get(id, params = {}) {
+  get(id, params = {}, action) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'get' can not be undefined`));
     }
 
+    if (action) params.__action = action;
     return this.request({
       method: 'get',
       args: [id],
@@ -51,7 +53,7 @@ export default class DefaultService {
     });
   }
 
-  create(body, params = {}) {
+  create(body, params = {}, action) {
     return this.request({
       method: 'create',
       args: [body],
@@ -59,11 +61,12 @@ export default class DefaultService {
     });
   }
 
-  update(id, body, params = {}) {
+  update(id, body, params = {}, action) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'update' can not be undefined, only 'null' when updating multiple entries`));
     }
 
+    if (action) params.__action = action;
     return this.request({
       method: 'update',
       args: [id, body],
@@ -71,11 +74,12 @@ export default class DefaultService {
     });
   }
 
-  patch(id, body, params = {}) {
+  patch(id, body, params = {}, action) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'patch' can not be undefined, only 'null' when updating multiple entries`));
     }
 
+    if (action) params.__action = action;
     return this.request({
       method: 'patch',
       args: [id, body],
@@ -83,31 +87,14 @@ export default class DefaultService {
     });
   }
 
-  remove(id, params = {}) {
+  remove(id, params = {}, action) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'remove' can not be undefined, only 'null' when removing multiple entries`));
     }
 
+    if (action) params.__action = action;
     return this.request({
       method: 'remove',
-      args: [id],
-      params: params
-    });
-  }
-
-  action(method, action, id, params = {}) {
-    if (['get', 'put', 'patch'].indexOf(method) === -1) {
-      return Promise.reject(new Error(`method for 'action' must be one of get/put/patch`));
-    }
-    if (!action) {
-      return Promise.reject(new Error(`action for 'action' can not be undefined`));
-    }
-    if (typeof id === 'undefined') {
-      return Promise.reject(new Error(`id for 'action' can not be undefined`));
-    }
-
-    return this.request({
-      method: method,
       args: [id],
       params: params
     });
