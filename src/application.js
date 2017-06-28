@@ -131,11 +131,14 @@ export default {
 
           route.match(this.routes, extend(['host'],
             { path: '', feathers: {} }, req, { response: null }));
+
+          console.time(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
           protoService[req.cmd]
             .apply(protoService, req.args.concat([req.params]))
             .then(data => {
               debug(`service \'${protoService.name}\' result`);
               debug(` => data %j`, data);
+              console.timeEnd(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
               return cb(null, data);
             })
             .catch(err => {
