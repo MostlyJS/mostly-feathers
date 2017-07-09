@@ -126,8 +126,9 @@ export default {
           debug(` => topic  \'${req.topic}\'`);
           debug(` => cmd  \'${req.cmd}\'`);
           debug(` => path \'${req.path}\'`);
-          debug(` => args %j`, req.args);
-          debug(` => params %j`, req.params);
+          debug(` => args`, req.args);
+          debug(` => params`, req.params);
+          debug(` => feathers`, req.feathers);
 
           route.match(this.routes, extend(['host'],
             { path: '', feathers: {} }, req, { response: null }));
@@ -137,7 +138,7 @@ export default {
             .apply(protoService, req.args.concat([req.params]))
             .then(data => {
               debug(`service \'${protoService.name}\' result`);
-              debug(` => data %j`, data);
+              debug(` => data`, data);
               console.timeEnd(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
               return cb(null, data);
             })
