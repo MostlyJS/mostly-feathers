@@ -99,4 +99,20 @@ export default class DefaultService {
       params: params
     });
   }
+
+  count(params = {}) {
+    return get(null, params, 'count');
+  }
+
+  first(params = {}) {
+    return get(null, params, 'first');
+  }
+
+  last(params = {}) {
+    return get(null, params, 'last');
+  }
+
+  restore(id, params = {}) {
+    return remove(id, params, 'restore');
+  }
 }
