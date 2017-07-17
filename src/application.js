@@ -135,7 +135,7 @@ export default {
 
           console.time(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
           protoService[req.cmd]
-            .apply(protoService, req.args.concat([req.params]))
+            .apply(protoService, [].concat(req.args, req.params))
             .then(data => {
               debug(`service \'${protoService.name}\' result`);
               debug(` => data`, data);
