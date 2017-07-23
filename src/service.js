@@ -31,8 +31,7 @@ export default class DefaultService {
     });
   }
 
-  find(params = {}, action) {
-    if (action) params.__action = action;
+  find(params = {}) {
     return this.request({
       method: 'find',
       args: [],
@@ -40,12 +39,11 @@ export default class DefaultService {
     });
   }
 
-  get(id, params = {}, action) {
+  get(id, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'get' can not be undefined`));
     }
 
-    if (action) params.__action = action;
     return this.request({
       method: 'get',
       args: [id],
@@ -53,7 +51,7 @@ export default class DefaultService {
     });
   }
 
-  create(body, params = {}, action) {
+  create(body, params = {}) {
     return this.request({
       method: 'create',
       args: [body],
@@ -61,12 +59,11 @@ export default class DefaultService {
     });
   }
 
-  update(id, body, params = {}, action) {
+  update(id, body, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'update' can not be undefined, only 'null' when updating multiple entries`));
     }
 
-    if (action) params.__action = action;
     return this.request({
       method: 'update',
       args: [id, body],
@@ -74,12 +71,11 @@ export default class DefaultService {
     });
   }
 
-  patch(id, body, params = {}, action) {
+  patch(id, body, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'patch' can not be undefined, only 'null' when updating multiple entries`));
     }
 
-    if (action) params.__action = action;
     return this.request({
       method: 'patch',
       args: [id, body],
@@ -87,12 +83,11 @@ export default class DefaultService {
     });
   }
 
-  remove(id, params = {}, action) {
+  remove(id, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'remove' can not be undefined, only 'null' when removing multiple entries`));
     }
 
-    if (action) params.__action = action;
     return this.request({
       method: 'remove',
       args: [id],
@@ -100,19 +95,28 @@ export default class DefaultService {
     });
   }
 
+  upsert(data, params = {}) {
+    params.__action = 'upsert';
+    return this.create(data, params);
+  }
+
   count(params = {}) {
-    return get(null, params, 'count');
+    params.__action = 'count';
+    return this.get(null, params);
   }
 
   first(params = {}) {
-    return get(null, params, 'first');
+    params.__action = 'first';
+    return this.get(null, params);
   }
 
   last(params = {}) {
-    return get(null, params, 'last');
+    params.__action = 'last';
+    return this.get(null, params);
   }
 
   restore(id, params = {}) {
-    return remove(id, params, 'restore');
+    params.__action = 'restore';
+    return this.remove(id, params);
   }
 }
