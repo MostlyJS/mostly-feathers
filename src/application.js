@@ -144,7 +144,10 @@ export default {
             })
             .catch(err => {
               debug(`service \'${protoService.name}\' result`);
-              debug(` => error %j`, err);
+              debug(` => error`, err);
+              // remove context in errors from feathers to nats
+              delete err.hook;
+              delete err.model;
               return cb(err);
             });
         });
