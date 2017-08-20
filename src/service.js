@@ -5,6 +5,8 @@ import { convert } from 'feathers-errors';
 
 const debug = makeDebug('mostly:feathers:default-service');
 
+const defaultMethods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
+
 export default class DefaultService {
   constructor (settings) {
     this.id = settings.id || '_id';
@@ -93,6 +95,14 @@ export default class DefaultService {
       args: [id],
       params: params
     });
+  }
+
+  action(method, action, id, data, params) {
+    if (defaultMethods.indexOf(method) < 0 || !action) {
+      return Promise.reject(new Error(`action and method is not valid`));
+    }
+    params.__action = action;
+    return this[method].call(this, id, data, params);
   }
 
   upsert(data, params = {}) {
