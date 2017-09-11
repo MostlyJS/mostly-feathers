@@ -115,7 +115,7 @@ export default {
     }
 
     // Register the service
-    this.methods.forEach(method => {
+    for (var method of this.methods) {
       if (protoService[method]) {
         debug(` => method \'${protoService.name}.${method}\'`);
         this.trans.add({
@@ -152,7 +152,7 @@ export default {
             });
         });
       }
-    });
+    }
 
     // If we ran setup already, set this service up explicitly
     if (this._isSetup && typeof protoService.setup === 'function') {
