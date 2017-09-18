@@ -97,36 +97,41 @@ export default class DefaultService {
     });
   }
 
-  action(method, action, id, data, params) {
-    if (defaultMethods.indexOf(method) < 0 || !action) {
-      return Promise.reject(new Error(`action and method is not valid`));
-    }
-    params.__action = action;
-    return this[method].call(this, id, data, params);
-  }
+  /**
+   * proxy to action method
+   * syntax sugar for calling from other services
+   */
+  action (action) {
+    return {
+      find: (params = {}) => {
+        params.__action = action;
+        return this.find(params);
+      },
 
-  upsert(data, params = {}) {
-    params.__action = 'upsert';
-    return this.create(data, params);
-  }
+      get: (id, params = {}) => {
+        params.__action = action;
+        return this.get(id, params);
+      },
 
-  count(params = {}) {
-    params.__action = 'count';
-    return this.get(null, params);
-  }
+      create: (data, params = {}) => {
+        params.__action = action;
+        return this.create(data, params);
+      },
 
-  first(params = {}) {
-    params.__action = 'first';
-    return this.get(null, params);
-  }
+      update: (id, data, params = {}) => {
+        params.__action = action;
+        return this.update(id, data, params);
+      },
 
-  last(params = {}) {
-    params.__action = 'last';
-    return this.get(null, params);
-  }
+      patch: (id, data, params = {}) => {
+        params.__action = action;
+        return this.patch(id, data, params);
+      },
 
-  restore(id, params = {}) {
-    params.__action = 'restore';
-    return this.remove(id, params);
+      remove: (id, params = {}) => {
+        params.__action = action;
+        return this.remove(id, params);
+      }
+    };
   }
 }
