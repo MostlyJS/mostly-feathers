@@ -1,105 +1,134 @@
-import query from 'qs';
+import assert from 'assert';
 import makeDebug from 'debug';
-import { stripSlashes } from 'feathers-commons';
-import { convert } from 'feathers-errors';
+import fp from 'mostly-func';
 
-const debug = makeDebug('mostly:feathers:default-service');
+const debug = makeDebug('mostly:feathers:service');
 
 const defaultMethods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
 
-export default class DefaultService {
-  constructor (settings) {
-    this.id = settings.id || '_id';
-    this.name = stripSlashes(settings.name);
-    this.trans = settings.trans;
+const defaultOptions = {
+  name: 'service'
+};
+
+export default class Service {
+  constructor (options) {
+    options = Object.assign({}, defaultOptions, options);
+    this.name = options.name;
   }
 
-  request(options) {
-    return new Promise((resolve, reject) => {
-      let pattern = {
-        topic: `feathers.${this.name}`,
-        cmd: options.method,
-        args: options.args,
-        params: options.params,
-        path: '',
-        feathers: {}
-      };
-      debug('default service request', pattern);
-      this.trans.act(pattern, (err, data) => {
-        debug(' => default service response:', err, data);
-        if (err) return reject(err.cause || err);
-        resolve(data);
-      });
-    });
+  setup(app) {
+    this.app = app;
   }
 
-  find(params = {}) {
-    return this.request({
-      method: 'find',
-      args: [],
-      params: params
-    });
-  }
+  find (params) {
+    params = fp.assign({ query: {} }, params);
+    
+    const action = params.__action || (params.query && params.query.$action);
 
-  get(id, params = {}) {
-    if (typeof id === 'undefined') {
-      return Promise.reject(new Error(`id for 'get' can not be undefined`));
+    if (!action || action === 'find') {
+      debug('service %s find %j', this.name, params.query);
+      return this._find(params);
     }
 
-    return this.request({
-      method: 'get',
-      args: [id],
-      params: params
-    });
+    return this._action('find', action, null, null, params);
   }
 
-  create(body, params = {}) {
-    return this.request({
-      method: 'create',
-      args: [body],
-      params: params
-    });
-  }
+  get (id, params) {
+    params = fp.assign({ query: {} }, params);
 
-  update(id, body, params = {}) {
-    if (typeof id === 'undefined') {
-      return Promise.reject(new Error(`id for 'update' can not be undefined, only 'null' when updating multiple entries`));
+    let action = params.__action || (params.query && params.query.$action);
+
+    // check if id is action for find
+    if (id && !action) {
+      if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
+        params = fp.assoc('__action', id, params);
+        return this.find(params);
+      }
     }
 
-    return this.request({
-      method: 'update',
-      args: [id, body],
-      params: params
-    });
-  }
-
-  patch(id, body, params = {}) {
-    if (typeof id === 'undefined') {
-      return Promise.reject(new Error(`id for 'patch' can not be undefined, only 'null' when updating multiple entries`));
+    if (!action || action === 'get') {
+      debug('service %s get %j', this.name, id, params);
+      return this._get(id, params);
     }
 
-    return this.request({
-      method: 'patch',
-      args: [id, body],
-      params: params
-    });
+    return this._action('get', action, id, null, params);
   }
 
-  remove(id, params = {}) {
-    if (typeof id === 'undefined') {
-      return Promise.reject(new Error(`id for 'remove' can not be undefined, only 'null' when removing multiple entries`));
+  create (data, params) {
+    params = fp.assign({ query: {} }, params);
+
+    // add support to create multiple objects
+    if (Array.isArray(data)) {
+      return Promise.all(data.map(current => this.create(current, params)));
     }
 
-    return this.request({
-      method: 'remove',
-      args: [id],
-      params: params
-    });
+    const action = params.__action || (params.query && params.query.$action);
+    if (!action || action === 'create') {
+      debug('service %s create %j', this.name, data);
+      return this._create(data, params);
+    }
+
+    // TODO secure action call by get
+    return this._action('create', action, null, data, params);
+  }
+
+  update (id, data, params) {
+    params = fp.assign({}, params);
+
+    let action = params.__action || (params.query && params.query.$action);
+    
+    // check if id is action for patch
+    if (id && !action) {
+      if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
+        action = id;
+        id = null;
+      }
+    }
+
+    if (!action || action === 'update') {
+      debug('service %s update %j', this.name, id, data);
+      return this._update(id, data, params);
+    }
+    
+    return this._action('update', action, id, data, params);
+  }
+
+  patch (id, data, params) {
+    params = fp.assign({}, params);
+
+    let action = params.__action || (params.query && params.query.$action);
+    
+    // check if id is action for patch
+    if (id && !action) {
+      if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
+        action = id;
+        id = null;
+      }
+    }
+
+    if (!action || action === 'patch') {
+      return this._patch(id, data, params);
+    }
+
+    return this._action('patch', action, id, data, params);
+  }
+
+  remove (id, params) {
+    params = fp.assign({}, params);
+
+    const action = params.__action || (params.query && params.query.$action);
+    if (!action || action === 'remove') {
+      debug('service %s remove %j', this.name, id);
+      return this._remove(id, params);
+    }
+
+    // TODO secure action call by get
+    this._action('remove', action, id, null, params);
   }
 
   /**
    * proxy to action method
-   * syntax sugar for calling from other services
+   * syntax sugar for calling from other services, do not call them by super
    */
   action (action) {
     return {
@@ -134,4 +163,37 @@ export default class DefaultService {
       }
     };
   }
+
+  /**
+   * private actions, aciton method are pseudo private by underscore
+   */
+
+  _action (method, action, id, data, params) {
+    if (this['_' + action] === undefined || defaultMethods.indexOf(action) >= 0) {
+      throw new Error(`No such **${method}** action: ${action}`);
+    }
+    if (params.__action)
+      params = fp.dissoc('__action', params);
+    if (params.query && params.query.$action)
+      params.query = fp.dissoc('$action', params.query);
+    debug('service %s %s action %s id %j => %j', this.name, method, action, id, data);
+
+    // get target item with params.query (without provider)
+    let query = id
+      ? this.get(id, { query: params.query || {} })
+      : Promise.resolve(null);
+    return query.then(origin => {
+      if (id && !origin) {
+        throw new Error('Not found record ' + id + ' in ' + this.Model.modelName);
+      }
+      return this['_' + action].call(this, id, data, params, origin);
+    });
+  }
+
+  _find(params) { throw new Error('Not implemented'); }
+  _get(id, params) { throw new Error('Not implemented'); }
+  _create(data, params) { throw new Error('Not implemented');  }
+  _update(id, data, params) { throw new Error('Not implemented'); }
+  _patch(id, data, params) { throw new Error('Not implemented'); }
+  _remove(id, params) { throw new Error('Not implemented'); }
 }

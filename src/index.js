@@ -1,10 +1,11 @@
 import feathers from './feathers';
-import DefaultService from './service';
+import ProxyService from './proxy-service';
+import Service from './service';
 
 export default function createApplication (...args) {
   return feathers(...args);
 }
-export { DefaultService };
+export { ProxyService, Service };
 Object.assign(createApplication, {
   version: require('../package.json').version
 });

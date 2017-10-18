@@ -5,7 +5,7 @@ import Uberproto from 'uberproto';
 import util from 'util';
 import route from './route';
 import mixins from './mixins/index';
-import DefaultService from './service';
+import ProxyService from './proxy-service';
 
 const debug = makeDebug('mostly:feathers:application');
 const methods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
@@ -91,12 +91,12 @@ export default {
       const current = this.services[location];
 
       if (typeof current === 'undefined') {
-        let defaultService = new DefaultService({
+        let proxyService = new ProxyService({
           name: location,
           trans: this.trans
         });
 
-        return (this.services[location] = defaultService);
+        return (this.services[location] = proxyService);
       }
 
       return current;
