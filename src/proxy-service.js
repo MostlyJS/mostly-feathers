@@ -24,9 +24,9 @@ export default class ProxyService {
         path: '',
         feathers: {}
       };
-      debug('default service request', pattern);
+      debug('proxy service request', pattern);
       this.trans.act(pattern, (err, data) => {
-        debug(' => default service response:', err, data);
+        debug(' => proxy service response:', err, data);
         if (err) return reject(err.cause || err);
         resolve(data);
       });
