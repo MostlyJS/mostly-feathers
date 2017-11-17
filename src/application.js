@@ -122,13 +122,15 @@ export default {
           topic: `feathers.${location}`,
           cmd: method
         }, (req, cb) => {
-          debug(`service \'${protoService.name}\' called`);
-          debug(` => topic  \'${req.topic}\'`);
-          debug(` => cmd  \'${req.cmd}\'`);
-          debug(` => path \'${req.path}\'`);
-          debug(` => args`, req.args);
-          debug(` => params`, req.params);
-          debug(` => feathers`, req.feathers);
+          debug(`service \'${protoService.name}\' called`, {
+            topic: req.topic,
+            cmd: req.cmd,
+            params: {
+              query: req.params.query,
+              provider: req.params.provider,
+              user: req.params.user
+            }
+          });
 
           route.match(this.routes, extend(['host'],
             { path: '', feathers: {} }, req, { response: null }));
@@ -137,14 +139,16 @@ export default {
           protoService[req.cmd]
             .apply(protoService, [].concat(req.args, req.params))
             .then(data => {
-              debug(`service \'${protoService.name}\' result`);
-              debug(` => data`, data);
+              debug(`service \'${protoService.name}\' response`, {
+                size: data? JSON.stringify(data).length : 0
+              });
               console.timeEnd(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
               return cb(null, data);
             })
             .catch(err => {
-              debug(`service \'${protoService.name}\' result`);
-              debug(` => error`, err);
+              debug(`service \'${protoService.name}\' response`, {
+                error: err
+              });
               // remove context in errors from feathers to nats
               delete err.hook;
               delete err.model;
