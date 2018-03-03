@@ -24,15 +24,9 @@ export default class ProxyService {
         path: '',
         feathers: {}
       };
-      debug(`proxy service \'${pattern.topic}\' request`, {
-        topic: pattern.topic,
-        cmd: pattern.cmd,
-        params: {
-          query: pattern.params.query,
-          provider: pattern.params.provider,
-          user: pattern.params.user
-        }
-      });
+      debug(`proxy service \'${pattern.topic}\' request`,
+        pattern.cmd, JSON.stringify(pattern.params.query)
+      );
       this.trans.act(pattern, (err, data) => {
         debug(` => proxy service \'${pattern.topic}\' response`, {
           error: err,
