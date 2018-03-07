@@ -13,7 +13,7 @@ gulp.task('lint', function() {
 
 gulp.task('compile', ['lint'], () => {
   return gulp.src('src/**/*.js')
-    // .pipe(changed('lib'))
+    //.pipe(changed('lib'))
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(sourcemaps.write())
