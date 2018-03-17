@@ -12,7 +12,7 @@ const defaultOptions = {
 
 export default class Service {
   constructor (options) {
-    options = Object.assign({}, defaultOptions, options);
+    this.options = Object.assign({}, defaultOptions, options);
     this.name = options.name;
   }
 
