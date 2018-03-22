@@ -13,7 +13,8 @@
     "eqeqeq": ["off", "smart"],
     "no-console": "off",
     "no-unused-vars": "off",
-    "indent": ["error", 2, { "SwitchCase": 1 }]
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "space-before-function-paren": ["error", "always"]
   },
   "env": {
     "es6": true,
