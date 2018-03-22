@@ -14,7 +14,7 @@ export default class ProxyService {
     this.trans = settings.trans;
   }
 
-  request(options) {
+  request (options) {
     return new Promise((resolve, reject) => {
       let pattern = {
         topic: `feathers.${this.name}`,
@@ -38,7 +38,7 @@ export default class ProxyService {
     });
   }
 
-  find(params = {}) {
+  find (params = {}) {
     return this.request({
       method: 'find',
       args: [],
@@ -46,7 +46,7 @@ export default class ProxyService {
     });
   }
 
-  get(id, params = {}) {
+  get (id, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'get' can not be undefined`));
     }
@@ -58,7 +58,7 @@ export default class ProxyService {
     });
   }
 
-  create(body, params = {}) {
+  create (body, params = {}) {
     return this.request({
       method: 'create',
       args: [body],
@@ -66,7 +66,7 @@ export default class ProxyService {
     });
   }
 
-  update(id, body, params = {}) {
+  update (id, body, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'update' can not be undefined, only 'null' when updating multiple entries`));
     }
@@ -78,7 +78,7 @@ export default class ProxyService {
     });
   }
 
-  patch(id, body, params = {}) {
+  patch (id, body, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'patch' can not be undefined, only 'null' when updating multiple entries`));
     }
@@ -90,7 +90,7 @@ export default class ProxyService {
     });
   }
 
-  remove(id, params = {}) {
+  remove (id, params = {}) {
     if (typeof id === 'undefined') {
       return Promise.reject(new Error(`id for 'remove' can not be undefined, only 'null' when removing multiple entries`));
     }

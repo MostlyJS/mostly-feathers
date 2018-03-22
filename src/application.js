@@ -15,8 +15,8 @@ const Proto = Uberproto.extend({
 });
 
 // Adapts an express style handler to uroute
-function adapt(fn) {
-  return function adapter(ctx){
+function adapt (fn) {
+  return function adapter (ctx){
     return Promise.resolve(fn(ctx, ctx.response, ctx.next)).then(x => {
       return x === undefined && fn.length < 3 ? false : x;
     });
@@ -25,7 +25,7 @@ function adapt(fn) {
 
 // simplified version of `extend` that does not do deep cloning, but does
 // accept an optional array of key names to skip as it's first argument.
-function extend() {
+function extend () {
   var args = [].splice.call(arguments, []), except, out = args.shift();
   if (Array.isArray(out)) {
     except = out;
@@ -44,7 +44,7 @@ function extend() {
 }
 
 export default {
-  init(trans) {
+  init (trans) {
     Object.assign(this, {
       trans,
       methods,
@@ -57,34 +57,34 @@ export default {
     });
   },
 
-  get(name) {
+  get (name) {
     return this.settings[name];
   },
 
-  set(name, value) {
+  set (name, value) {
     this.settings[name] = value;
     return this;
   },
 
-  disable(name) {
+  disable (name) {
     this.settings[name] = false;
     return this;
   },
 
-  disabled(name) {
+  disabled (name) {
     return !this.settings[name];
   },
 
-  enable(name) {
+  enable (name) {
     this.settings[name] = true;
     return this;
   },
 
-  enabled(name) {
+  enabled (name) {
     return !!this.settings[name];
   },
 
-  service(location, service, options = {}) {
+  service (location, service, options = {}) {
     location = stripSlashes(location);
 
     if (!service) {
@@ -167,7 +167,7 @@ export default {
     return (this.services[location] = protoService);
   },
 
-  use(location) {
+  use (location) {
     let service;
     let middleware = Array.from(arguments)
       .slice(1)
@@ -219,7 +219,7 @@ export default {
     return this;
   },
 
-  setup() {
+  setup () {
     // Setup each service (pass the app so that they can look up other services etc.)
     Object.keys(this.services).forEach(path => {
       const service = this.services[path];
@@ -235,12 +235,12 @@ export default {
     return this;
   },
 
-  configure(fn) {
+  configure (fn) {
     fn && fn.call(this, this);
     return this;
   },
 
-  start() {
+  start () {
     this.setup();
     debug('Mostly-feathers microservice application started');
     return this;

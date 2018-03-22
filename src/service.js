@@ -16,7 +16,7 @@ export default class Service {
     this.name = options.name;
   }
 
-  setup(app) {
+  setup (app) {
     this.app = app;
   }
 
@@ -190,10 +190,10 @@ export default class Service {
     });
   }
 
-  _find(params) { throw new Error('Not implemented'); }
-  _get(id, params) { throw new Error('Not implemented'); }
-  _create(data, params) { throw new Error('Not implemented');  }
-  _update(id, data, params) { throw new Error('Not implemented'); }
-  _patch(id, data, params) { throw new Error('Not implemented'); }
-  _remove(id, params) { throw new Error('Not implemented'); }
+  _find (params) { throw new Error('Not implemented'); }
+  _get (id, params) { throw new Error('Not implemented'); }
+  _create (data, params) { throw new Error('Not implemented');  }
+  _update (id, data, params) { throw new Error('Not implemented'); }
+  _patch (id, data, params) { throw new Error('Not implemented'); }
+  _remove (id, params) { throw new Error('Not implemented'); }
 }

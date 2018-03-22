@@ -3,7 +3,7 @@ import pathToRegExp from 'path-to-regexp';
 
 const debug = makeDebug('mostly:feathers:route');
 
-function route() {
+function route () {
   var args = Array.prototype.slice.call(arguments),
     next = args.shift(),
     path, ctx = {}, action, children;
@@ -36,7 +36,7 @@ function route() {
   if (typeof action == 'function') {
     result.action = action;
   } else if (children) {
-    result.action = function next(ctx) {
+    result.action = function next (ctx) {
       return ctx.next();
     };
   }
@@ -46,7 +46,7 @@ function route() {
   return result;
 }
 
-function match(routes, ctx) {
+function match (routes, ctx) {
   debug('match', ctx.path);
   var context = typeof ctx === 'string' || ctx instanceof String ? {path: ctx} : ctx;
   var root = Array.isArray(routes) ? { path: '/', children: routes } : routes;
@@ -54,7 +54,7 @@ function match(routes, ctx) {
   var match = matchRoute(root, '', context.path);
   var result, value, done = false;
 
-  context.next = function() {
+  context.next = function () {
     var promise = Promise.resolve();
     var next = match.next();
     value = next.value;
@@ -77,13 +77,13 @@ function match(routes, ctx) {
     return promise;
   };
 
-  context.end = function(data) {
+  context.end = function (data) {
     result = data;
     done = true;
   };
 
-  function run() {
-    return context.next().then(function(r){
+  function run () {
+    return context.next().then(function (r){
       if (r !== undefined) {
         result = r;
         done = true;
@@ -93,7 +93,7 @@ function match(routes, ctx) {
     });
   }
 
-  return run().then(function(r){
+  return run().then(function (r){
     if (r === undefined && errorRoute) {
       context.error = new Error('Not found');
       context.error.status = 404;
@@ -104,11 +104,11 @@ function match(routes, ctx) {
 }
 
 
-function matchRoute(route, baseUrl, path) {
+function matchRoute (route, baseUrl, path) {
   var match, childMatches, childIdx = 0;
   // simulate a generator function by returning an object with a `next` method
   return {
-    next: function(){
+    next: function (){
       if (!route.children) {
         if (! match) {
           match = matchPath(true, route.path, path);
@@ -170,7 +170,7 @@ function matchRoute(route, baseUrl, path) {
 }
 
 
-function matchPath(end, routePath, urlPath) {
+function matchPath (end, routePath, urlPath) {
   var key = routePath + '|' + end;
   var regexp = cache[key];
   if (!regexp) {
@@ -188,12 +188,12 @@ function matchPath(end, routePath, urlPath) {
 }
 
 
-function decode(val) {
+function decode (val) {
   return typeof val !== 'string' ? val : decodeURIComponent(val);
 }
 
 
-function extend(out) {
+function extend (out) {
   for (var src, i=1; i<arguments.length; i++) {
     if ((src = arguments[i]) !== undefined && src !== null) {
       for (var key in src) {
