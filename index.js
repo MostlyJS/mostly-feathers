@@ -1,3 +1,2 @@
-if (!global._babelPolyfill) { require('babel-polyfill'); }
-
-module.exports = require('./lib/index');
+require = require("esm")(module/*, options*/);
+module.exports = require('./src/index');

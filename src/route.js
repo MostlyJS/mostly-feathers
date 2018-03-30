@@ -210,4 +210,5 @@ route.route = route;
 route.match = match;
 route.match.matchRoute = matchRoute;
 route.match.matchPath = matchPath;
-module.exports = route;
+
+export default route;

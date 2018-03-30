@@ -1163,6 +1163,10 @@ eslint@^3.0.0:
     text-table "~0.2.0"
     user-home "^2.0.0"
 
+esm@^3.0.14:
+  version "3.0.14"
+  resolved "https://registry.npmjs.org/esm/-/esm-3.0.14.tgz#a9a79b7348c8708050ff42499b5ecbec019d08dc"
+
 espree@^3.4.0:
   version "3.4.2"
   resolved "http://registry.npm.taobao.org/espree/download/espree-3.4.2.tgz#38dbdedbedc95b8961a1fbf04734a8f6a9c8c592"
