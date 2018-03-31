@@ -6,24 +6,20 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "prepublish": "npm run compile",
     "publish": "git push origin --tags && git push origin",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
-    "compile": "rimraf -rf lib/ && babel src/ -d lib/ --copy-files",
-    "watch": "babel --watch src/ --source-maps inline -d lib/ --copy-files",
     "lint": "eslint-if-supported semistandard --fix",
     "mocha": "mocha --opts mocha.opts",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --opts mocha.opts",
-    "test": "npm run compile && npm run lint && npm run coverage"
+    "test": "npm run lint && npm run coverage"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MostlyJS/mostly-feathers.git"
   },
   "dependencies": {
-    "babel-polyfill": "^6.23.0",
     "debug": "^2.6.6",
     "esm": "^3.0.14",
     "feathers-commons": "^0.8.7",
@@ -34,11 +30,6 @@
     "uberproto": "^1.2.0"
   },
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.3",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-root-import": "^5.1.0",
-    "babel-preset-env": "^1.4.0",
     "eslint-if-supported": "^1.0.1",
     "eslint-plugin-promise": "^3.5.0",
     "gulp": "^3.9.1",
