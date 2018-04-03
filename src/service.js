@@ -184,7 +184,8 @@ export default class Service {
       : Promise.resolve(null);
     return query.then(origin => {
       if (id && !origin) {
-        throw new Error('Not found record ' + id + ' in ' + this.Model.modelName);
+        throw new Error('Not found record ' + id + ' in ' +
+          (this.Model && this.Model.modelName || this.name));
       }
       return this['_' + action].call(this, id, data, params, origin);
     });
