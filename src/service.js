@@ -22,7 +22,7 @@ export default class Service {
 
   find (params) {
     params = fp.assign({ query: {} }, params);
-    
+
     const action = params.__action || (params.query && params.query.$action);
 
     if (!action || action === 'find') {
@@ -76,7 +76,7 @@ export default class Service {
     params = fp.assign({}, params);
 
     let action = params.__action || (params.query && params.query.$action);
-    
+
     // check if id is action for patch
     if (id && !action) {
       if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
@@ -89,7 +89,7 @@ export default class Service {
       debug('service %s update %j', this.name, id, data);
       return this._update(id, data, params);
     }
-    
+
     return this._action('update', action, id, data, params);
   }
 
@@ -97,7 +97,7 @@ export default class Service {
     params = fp.assign({}, params);
 
     let action = params.__action || (params.query && params.query.$action);
-    
+
     // check if id is action for patch
     if (id && !action) {
       if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
@@ -164,12 +164,8 @@ export default class Service {
     };
   }
 
-  /**
-   * private actions, aciton method are pseudo private by underscore
-   */
-
   _action (method, action, id, data, params) {
-    if (this['_' + action] === undefined || defaultMethods.indexOf(action) >= 0) {
+    if (this[action] === undefined || defaultMethods.indexOf(action) >= 0) {
       throw new Error(`No such **${method}** action: ${action}`);
     }
     if (params.__action)
@@ -187,7 +183,7 @@ export default class Service {
         throw new Error('Not found record ' + id + ' in ' +
           (this.Model && this.Model.modelName || this.name));
       }
-      return this['_' + action].call(this, id, data, params, origin);
+      return this[action].call(this, id, data, params, origin);
     });
   }
 
