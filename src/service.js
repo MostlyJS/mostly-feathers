@@ -1,10 +1,9 @@
 import assert from 'assert';
 import makeDebug from 'debug';
 import fp from 'mostly-func';
+import { defaultMethods } from './helpers';
 
 const debug = makeDebug('mostly:feathers:service');
-
-const defaultMethods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
 
 const defaultOptions = {
   name: 'service'
@@ -40,7 +39,7 @@ export default class Service {
 
     // check if id is action for find
     if (id && !action) {
-      if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
+      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
         params = fp.assoc('__action', id, params);
         return this.find(params);
       }
@@ -79,7 +78,7 @@ export default class Service {
 
     // check if id is action for patch
     if (id && !action) {
-      if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
+      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
         action = id;
         id = null;
       }
@@ -100,7 +99,7 @@ export default class Service {
 
     // check if id is action for patch
     if (id && !action) {
-      if (this['_' + id] && defaultMethods.indexOf(id) < 0) {
+      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
         action = id;
         id = null;
       }
