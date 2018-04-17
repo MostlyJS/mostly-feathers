@@ -1,6 +1,6 @@
 {
   "name": "mostly-feathers",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "MostlyJS microservice integration with feathers",
   "author": "Forafish",
   "license": "MIT",
@@ -15,9 +15,13 @@
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --opts mocha.opts",
     "test": "npm run lint && npm run coverage"
   },
+  "homepage": "https://github.com/MostlyJS/mostly-feathers#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MostlyJS/mostly-feathers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MostlyJS/mostly-feathers/issues"
   },
   "dependencies": {
     "debug": "^2.6.6",
