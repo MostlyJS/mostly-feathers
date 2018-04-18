@@ -8,16 +8,17 @@ const debug = makeDebug('mostly:feathers:proxy-service');
 const defaultMethods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
 
 export default class ProxyService {
-  constructor (settings) {
+  constructor (settings = { id: '_id'}) {
     this.id = settings.id || '_id';
     this.name = stripSlashes(settings.name);
+    this.domain = stripSlashes(settings.domain || 'feathers');
     this.trans = settings.trans;
   }
 
-  request (options) {
+  request (options = {}) {
     return new Promise((resolve, reject) => {
       let pattern = {
-        topic: `feathers.${this.name}`,
+        topic: `${this.domain}.${this.name}`,
         cmd: options.method,
         args: options.args,
         params: options.params,

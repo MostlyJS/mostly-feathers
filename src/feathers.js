@@ -6,7 +6,7 @@ import app from './application';
  * @return {Function}
  * @api public
  */
-export default function createApplication (trans) {
-  app.init(trans);
+export default function createApplication (trans, domain) {
+  app.init(trans, domain);
   return app;
 }

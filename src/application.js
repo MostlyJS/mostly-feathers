@@ -44,9 +44,10 @@ function extend () {
 }
 
 export default {
-  init (trans) {
+  init (trans, domain = 'feathers') {
     Object.assign(this, {
       trans,
+      domain,
       methods,
       mixins: mixins(),
       mountpath: '/',
@@ -93,6 +94,7 @@ export default {
       if (typeof current === 'undefined') {
         let proxyService = new ProxyService({
           name: location,
+          domain: this.domain,
           trans: this.trans
         });
 
@@ -119,7 +121,7 @@ export default {
       if (protoService[method]) {
         debug(` => method \'${protoService.name}.${method}\'`);
         this.trans.add({
-          topic: `feathers.${location}`,
+          topic: `${this.domain}.${location}`,
           cmd: method
         }, (req, cb) => {
           debug(`service \'${protoService.name}\' called`, {

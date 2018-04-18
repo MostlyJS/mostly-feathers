@@ -7,6 +7,6 @@ const version = require('../package.json').version;
 
 export default function createApplication (...args) {
   return feathers(...args);
-};
+}
 
 export { ProxyService, Service, version, defaultMethods, idAction };
