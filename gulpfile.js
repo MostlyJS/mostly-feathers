@@ -6,7 +6,8 @@ gulp.task('lint', function () {
   return gulp.src('src/**/*.js')
     //.pipe(changed('lib'))
     .pipe(eslint())
-    .pipe(eslint.format());
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('watch', () => {
