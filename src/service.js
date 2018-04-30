@@ -11,7 +11,7 @@ const defaultOptions = {
 
 export default class Service {
   constructor (options) {
-    this.options = Object.assign({}, defaultOptions, options);
+    this.options = fp.assign(defaultOptions, options);
     this.name = this.options.name;
   }
 
