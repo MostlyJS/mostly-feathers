@@ -1,8 +1,10 @@
 import assert from 'assert';
 import makeDebug from 'debug';
 import { stripSlashes } from 'feathers-commons';
+import fp from 'mostly-func';
 import Uberproto from 'uberproto';
 import util from 'util';
+
 import route from './route';
 import mixins from './mixins/index';
 import ProxyService from './proxy-service';
@@ -138,8 +140,9 @@ export default {
             { path: '', feathers: {} }, req, { response: null }));
 
           console.time(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
-          protoService[req.cmd]
-            .apply(protoService, [].concat(req.args, req.params))
+          const protoMethod = fp.is(Function, protoService[req.params.action])
+            ? protoService[req.params.action] : protoService[req.cmd];
+          protoMethod.apply(protoService, [].concat(req.args, req.params))
             .then(data => {
               debug(`service \'${protoService.name}\' response`, {
                 size: data? JSON.stringify(data).length : 0
