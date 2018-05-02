@@ -4,7 +4,7 @@ export const defaultMethods = ['find', 'get', 'create', 'update', 'patch', 'remo
 
 export const idAction = (id, params) => {
   if (id === 'null') id = null;
-  const action = params && (params.__action || (params.query && params.query.$action));
+  const action = params && (params.action || (params.query && params.query.$action));
   // check if id is action name for find
   if (id && !action) {
     if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {

@@ -110,32 +110,32 @@ export default class ProxyService {
   action (action) {
     return {
       find: (params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.find(params);
       },
 
       get: (id, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.get(id, params);
       },
 
       create: (data, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.create(data, params);
       },
 
       update: (id, data, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.update(id, data, params);
       },
 
       patch: (id, data, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.patch(id, data, params);
       },
 
       remove: (id, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.remove(id, params);
       }
     };

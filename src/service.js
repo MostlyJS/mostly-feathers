@@ -22,7 +22,7 @@ export default class Service {
   find (params) {
     params = fp.assign({ query: {} }, params);
 
-    const action = params.__action || (params.query && params.query.$action);
+    const action = params.action || (params.query && params.query.$action);
 
     if (!action || action === 'find') {
       debug('service %s find %j', this.name, params.query);
@@ -35,7 +35,7 @@ export default class Service {
   get (id, params) {
     params = fp.assign({ query: {} }, params);
 
-    let action = params.__action || (params.query && params.query.$action);
+    let action = params.action || (params.query && params.query.$action);
 
     // check if id is action for find
     if (id && !action) {
@@ -61,7 +61,7 @@ export default class Service {
       return Promise.all(data.map(current => this.create(current, params)));
     }
 
-    const action = params.__action || (params.query && params.query.$action);
+    const action = params.action || (params.query && params.query.$action);
     if (!action || action === 'create') {
       debug('service %s create %j', this.name, data);
       return this._create(data, params);
@@ -74,7 +74,7 @@ export default class Service {
   update (id, data, params) {
     params = fp.assign({}, params);
 
-    let action = params.__action || (params.query && params.query.$action);
+    let action = params.action || (params.query && params.query.$action);
 
     // check if id is action for patch
     if (id && !action) {
@@ -95,7 +95,7 @@ export default class Service {
   patch (id, data, params) {
     params = fp.assign({}, params);
 
-    let action = params.__action || (params.query && params.query.$action);
+    let action = params.action || (params.query && params.query.$action);
 
     // check if id is action for patch
     if (id && !action) {
@@ -115,7 +115,7 @@ export default class Service {
   remove (id, params) {
     params = fp.assign({}, params);
 
-    const action = params.__action || (params.query && params.query.$action);
+    const action = params.action || (params.query && params.query.$action);
     if (!action || action === 'remove') {
       debug('service %s remove %j', this.name, id);
       return this._remove(id, params);
@@ -132,32 +132,32 @@ export default class Service {
   action (action) {
     return {
       find: (params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.find(params);
       },
 
       get: (id, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.get(id, params);
       },
 
       create: (data, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.create(data, params);
       },
 
       update: (id, data, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.update(id, data, params);
       },
 
       patch: (id, data, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.patch(id, data, params);
       },
 
       remove: (id, params = {}) => {
-        params.__action = action;
+        params.action = action;
         return this.remove(id, params);
       }
     };
@@ -167,7 +167,7 @@ export default class Service {
     if (this[action] === undefined || defaultMethods.indexOf(action) >= 0) {
       throw new Error(`No such **${method}** action: ${action}`);
     }
-    if (params.__action)
+    if (params.action)
       params = fp.dissoc('__action', params);
     if (params.query && params.query.$action)
       params.query = fp.dissoc('$action', params.query);
