@@ -139,15 +139,19 @@ export default {
           route.match(this.routes, extend(['host'],
             { path: '', feathers: {} }, req, { response: null }));
 
-          console.time(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
-          const protoMethod = fp.is(Function, protoService[req.params.action])
-            ? protoService[req.params.action] : protoService[req.cmd];
-          protoMethod.apply(protoService, [].concat(req.args, req.params))
+          let action = req.params.action;
+          if (action && !fp.is(Function, protoService[action])) {
+            return cb(new Error(`No such action \'${action}\' found in service \'${protoService.name}\'`));
+          } else {
+            action = req.cmd;
+          }
+          console.time(`  mostly:feathers:service => ${req.topic}.${action}`);
+          protoService[action].apply(protoService, [].concat(req.args, req.params))
             .then(data => {
               debug(`service \'${protoService.name}\' response`, {
                 size: data? JSON.stringify(data).length : 0
               });
-              console.timeEnd(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
+              console.timeEnd(`  mostly:feathers:service => ${req.topic}.${action}`);
               return cb(null, data);
             })
             .catch(err => {
