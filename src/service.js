@@ -73,56 +73,56 @@ export default class Service {
   update (id, data, params) {
     params = fp.assign({}, params);
 
-    //let action = params.action || (params.query && params.query.$action);
+    let action = params.action || (params.query && params.query.$action);
 
     // check if id is action for patch
-    // if (id && !action) {
-    //   if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
-    //     action = id;
-    //     id = null;
-    //   }
-    // }
+    if (id && !action) {
+      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
+        action = id;
+        id = null;
+      }
+    }
 
-    //if (!action || action === 'update') {
-    debug('service %s update %j', this.name, id, data);
-    return this._update(id, data, params);
-    //}
+    if (!action || action === 'update') {
+      debug('service %s update %j', this.name, id, data);
+      return this._update(id, data, params);
+    }
 
-    //return this._action('update', action, id, data, params);
+    return this._action('update', action, id, data, params);
   }
 
   patch (id, data, params) {
     params = fp.assign({}, params);
 
-    // let action = params.action || (params.query && params.query.$action);
+    let action = params.action || (params.query && params.query.$action);
 
-    // // check if id is action for patch
-    // if (id && !action) {
-    //   if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
-    //     action = id;
-    //     id = null;
-    //   }
-    // }
+    // check if id is action for patch
+    if (id && !action) {
+      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
+        action = id;
+        id = null;
+      }
+    }
 
-    //if (!action || action === 'patch') {
-    debug('service %s patch %j', this.name, id, data);
-    return this._patch(id, data, params);
-    //}
+    if (!action || action === 'patch') {
+      debug('service %s patch %j', this.name, id, data);
+      return this._patch(id, data, params);
+    }
 
-    // return this._action('patch', action, id, data, params);
+    return this._action('patch', action, id, data, params);
   }
 
   remove (id, params) {
     params = fp.assign({}, params);
 
-    //const action = params.action || (params.query && params.query.$action);
-    //if (!action || action === 'remove') {
-    debug('service %s remove %j', this.name, id);
-    return this._remove(id, params);
-    //}
+    const action = params.action || (params.query && params.query.$action);
+    if (!action || action === 'remove') {
+      debug('service %s remove %j', this.name, id);
+      return this._remove(id, params);
+    }
 
     // TODO secure action call by get
-    //this._action('remove', action, id, null, params);
+    this._action('remove', action, id, null, params);
   }
 
   /**
