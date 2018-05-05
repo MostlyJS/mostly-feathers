@@ -140,8 +140,10 @@ export default {
             { path: '', feathers: {} }, req, { response: null }));
 
           let action = req.params.action;
-          if (action && !fp.is(Function, protoService[action])) {
-            return cb(new Error(`No such action \'${action}\' found in service \'${protoService.name}\'`));
+          if (action) {
+            if (!protoService[action] || !fp.isFunction(protoService[action])) {
+              return cb(new Error(`No such action \'${action}\' found in service \'${protoService.name}\'`));
+            }
           } else {
             action = req.cmd;
           }
