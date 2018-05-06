@@ -1,6 +1,6 @@
 {
   "name": "mostly-feathers",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "MostlyJS microservice integration with feathers",
   "author": "Forafish",
   "license": "MIT",
