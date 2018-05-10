@@ -1,7 +1,7 @@
 import assert from 'assert';
 import makeDebug from 'debug';
 import fp from 'mostly-func';
-import { defaultMethods } from './helpers';
+import { defaultMethods, isAction } from './helpers';
 
 const debug = makeDebug('mostly:feathers:service');
 
@@ -22,34 +22,18 @@ export default class Service {
   find (params) {
     params = fp.assign({ query: {} }, params);
 
-    //const action = params.action || (params.query && params.query.$action);
-
-    //if (!action || action === 'find') {
     debug('service %s find %j', this.name, params.query);
     return this._find(params);
-    //}
-
-    //return this._action('find', action, null, null, params);
   }
 
   get (id, params) {
     params = fp.assign({ query: {} }, params);
 
-    let action = (params.query || {}).$action || id;
-
-    // check if id is action for find
-    //if (id && !action) {
-    if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
-      return this[id].call(this, params);
+    if (this._isAction(id, params)) {
+      return this._action('get', id, null, params);
     }
-    //}
-
-    //if (!action || action === 'get') {
     debug('service %s get %j', this.name, id, params);
     return this._get(id, params);
-    //}
-
-    //return this._action('get', action, id, null, params);
   }
 
   create (data, params) {
@@ -60,69 +44,38 @@ export default class Service {
       return Promise.all(data.map(current => this.create(current, params)));
     }
 
-    //const action = params.action || (params.query && params.query.$action);
-    //if (!action || action === 'create') {
     debug('service %s create %j', this.name, data);
     return this._create(data, params);
-    //}
-
-    // TODO secure action call by get
-    //return this._action('create', action, null, data, params);
   }
 
   update (id, data, params) {
     params = fp.assign({}, params);
 
-    let action = params.action || (params.query && params.query.$action);
-
-    // check if id is action for patch
-    if (id && !action) {
-      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
-        action = id;
-        id = null;
-      }
+    if (this._isAction(id, params)) {
+      return this._action('update', id, data, params);
     }
-
-    if (!action || action === 'update') {
-      debug('service %s update %j', this.name, id, data);
-      return this._update(id, data, params);
-    }
-
-    return this._action('update', action, id, data, params);
+    debug('service %s update %j', this.name, id, data);
+    return this._update(id, data, params);
   }
 
   patch (id, data, params) {
     params = fp.assign({}, params);
 
-    let action = params.action || (params.query && params.query.$action);
-
-    // check if id is action for patch
-    if (id && !action) {
-      if (fp.isFunction(this[id]) && defaultMethods.indexOf(id) < 0) {
-        action = id;
-        id = null;
-      }
+    if (this._isAction(id, params)) {
+      return this._action('patch', id, data, params);
     }
-
-    if (!action || action === 'patch') {
-      debug('service %s patch %j', this.name, id, data);
-      return this._patch(id, data, params);
-    }
-
-    return this._action('patch', action, id, data, params);
+    debug('service %s patch %j', this.name, id, data);
+    return this._patch(id, data, params);
   }
 
   remove (id, params) {
     params = fp.assign({}, params);
 
-    const action = params.action || (params.query && params.query.$action);
-    if (!action || action === 'remove') {
-      debug('service %s remove %j', this.name, id);
-      return this._remove(id, params);
+    if (this._isAction(id, params)) {
+      return this._action('remove', id, null, params);
     }
-
-    // TODO secure action call by get
-    this._action('remove', action, id, null, params);
+    debug('service %s remove %j', this.name, id);
+    return this._remove(id, params);
   }
 
   /**
@@ -130,60 +83,63 @@ export default class Service {
    * syntax sugar for calling from other services, do not call them by super
    */
   action (action) {
+    assert(action, 'action is not provided');
     return {
-      find: (params = {}) => {
+      get: async (params = {}) => {
         params.action = action;
-        return this.find(params);
+        return this.get(null, params);
       },
 
-      get: (id, params = {}) => {
+      create: async (data, params = {}) => {
         params.action = action;
-        return this.get(id, params);
+        return this.patch(null, data, params);
       },
 
-      create: (data, params = {}) => {
-        params.action = action;
-        return this.create(data, params);
-      },
-
-      update: (id, data, params = {}) => {
+      update: async (id, data, params = {}) => {
         params.action = action;
         return this.update(id, data, params);
       },
 
-      patch: (id, data, params = {}) => {
+      patch: async (id, data, params = {}) => {
         params.action = action;
         return this.patch(id, data, params);
       },
 
-      remove: (id, params = {}) => {
+      remove: async (id, params = {}) => {
         params.action = action;
         return this.remove(id, params);
       }
     };
   }
 
-  _action (method, action, id, data, params) {
-    if (this[action] === undefined || defaultMethods.indexOf(action) >= 0) {
-      throw new Error(`No such **${method}** action: ${action}`);
+  /**
+   * check if name is a service method
+   */
+  _isAction (id, params) {
+    return isAction(this, id, params);
+  }
+
+  /**
+   * Proxy to a action service
+   */
+  async _action (method, id, data, params) {
+    const action = params && (params.action || (params.query && params.query.$action)) || id;
+    assert(action, 'action is not provided');
+
+    if (!fp.isFunction(this[action]) || defaultMethods.indexOf(action) >= 0) {
+      throw new Error(`Not implemented **${method}** action: ${action}`);
     }
-    if (params.action)
-      params = fp.dissoc('__action', params);
-    if (params.query && params.query.$action)
-      params.query = fp.dissoc('$action', params.query);
+    params = fp.dissoc('action', fp.dissocPath(['query', '$action'], params));
     debug('service %s %s action %s id %j => %j', this.name, method, action, id, data);
 
-    // get target item with params.query (without provider)
-    let query = id
-      ? this.get(id, { query: params.query || {} })
-      : Promise.resolve(null);
-    return query.then(origin => {
-      if (id && !origin) {
-        throw new Error('Not found record ' + id + ' in ' +
-          (this.Model && this.Model.modelName || this.name));
-      }
-      return this[action].call(this, id, data, params, origin);
-    });
+    switch (method) {
+      case 'get': return this[action].call(this, params);
+      case 'create': return this[action].call(this, null, data, params);
+      case 'update': return this[action].call(this, id, data, params);
+      case 'patch': return this[action].call(this, id, data, params);
+      case 'remove': return this[action].call(this, id, params);
+      default: throw new Error(`Invalid method ${method}`);
+    }
   }
 
   _find (params) { throw new Error('Not implemented'); }

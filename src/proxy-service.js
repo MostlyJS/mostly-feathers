@@ -3,9 +3,9 @@ import makeDebug from 'debug';
 import { stripSlashes } from 'feathers-commons';
 import { convert } from 'feathers-errors';
 
-const debug = makeDebug('mostly:feathers:proxy-service');
+import { defaultMethods } from './helpers';
 
-const defaultMethods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
+const debug = makeDebug('mostly:feathers:proxy-service');
 
 export default class ProxyService {
   constructor (settings = { id: '_id'}) {
