@@ -49,7 +49,7 @@ export default class Service {
   }
 
   update (id, data, params) {
-    params = fp.assign({}, params);
+    params = { query: {}, ...params };
 
     if (this._isAction(id, params)) {
       return this._action('update', id, data, params);
@@ -59,7 +59,7 @@ export default class Service {
   }
 
   patch (id, data, params) {
-    params = fp.assign({}, params);
+    params = { query: {}, ...params };
 
     if (this._isAction(id, params)) {
       return this._action('patch', id, data, params);
@@ -69,7 +69,7 @@ export default class Service {
   }
 
   remove (id, params) {
-    params = fp.assign({}, params);
+    params = { query: {}, ...params };
 
     if (this._isAction(id, params)) {
       return this._action('remove', id, null, params);
