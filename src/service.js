@@ -20,14 +20,14 @@ export default class Service {
   }
 
   find (params) {
-    params = fp.assign({ query: {} }, params);
+    params = { query: {}, ...params };
 
     debug('service %s find %j', this.name, params.query);
     return this._find(params);
   }
 
   get (id, params) {
-    params = fp.assign({ query: {} }, params);
+    params = { query: {}, ...params };
 
     if (this._isAction(id, params)) {
       return this._action('get', id, null, params);
@@ -37,7 +37,7 @@ export default class Service {
   }
 
   create (data, params) {
-    params = fp.assign({ query: {} }, params);
+    params = { query: {}, ...params };
 
     // add support to create multiple objects
     if (Array.isArray(data)) {
