@@ -47,7 +47,7 @@ function extend () {
 
 export default {
   init (trans, domain = 'feathers') {
-    console.time('>>> Mostly-feathers app started');
+    console.time('>>> Mostly microservices app started');
     Object.assign(this, {
       trans,
       domain,
@@ -254,7 +254,7 @@ export default {
 
   start () {
     this.setup();
-    console.timeEnd('>>> Mostly-feathers app started');
+    console.timeEnd('>>> Mostly microservices app started');
     return this;
   }
 };
