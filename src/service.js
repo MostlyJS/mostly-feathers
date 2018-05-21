@@ -40,8 +40,8 @@ export default class Service {
     params = { query: {}, ...params };
 
     // add support to create multiple objects
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)));
+    if (fp.isArray(data)) {
+      return Promise.all(fp.map(current => this.create(current, params), data));
     }
 
     debug('service %s create %j', this.name, data);
