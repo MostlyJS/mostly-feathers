@@ -113,7 +113,7 @@ export default {
     let protoService = Proto.extend(service);
     protoService.name = protoService.name || location;
 
-    debug(`Registering new service \`${location}\``);
+    debug(`Registering new service at '${location}'`);
 
     // Add all the mixins
     this.mixins.forEach(fn => fn.call(this, protoService));
@@ -123,21 +123,16 @@ export default {
     }
 
     // Register the service
-    for (var method of this.methods) {
+    for (const method of this.methods) {
       if (protoService[method]) {
         this.trans.add({
           topic: `${this.domain}.${location}`,
           cmd: method
         }, (req, cb) => {
-          debug(`${method} \'${protoService.name}\' called`, {
-            topic: req.topic,
-            cmd: req.cmd,
-            params: {
-              query: req.params.query,
-              provider: req.params.provider,
-              user: req.params.user
-            }
-          });
+          debug(`service '${protoService.name}.${req.cmd}' called`, { topic: req.topic, cmd: req.cmd });
+          debug(`service '${protoService.name}.${req.cmd}' params`, req.params && { query: JSON.stringify(req.params.query) }),
+          debug(`service '${protoService.name}.${req.cmd}' params`, req.params && { provider: req.params.provider }),
+          debug(`service '${protoService.name}.${req.cmd}' params`, req.params && { user: req.params.user && req.params.user.id }),
 
           route.match(this.routes, extend(['host'],
             { path: '', feathers: {} }, req, { response: null }));
@@ -150,18 +145,18 @@ export default {
           // } else {
           //   action = req.cmd;
           // }
-          const tag = `  mostly:feathers:service => ${req.topic}.${req.cmd}`;
+          const tag = `  mostly:feathers:application service '${protoService.name}.${req.cmd}' time used`;
           if (timeDebug) console.time(tag);
           protoService[req.cmd].apply(protoService, [].concat(req.args, req.params))
             .then(data => {
-              debug(`service \'${protoService.name}\' response`, data && {
+              debug(`service '${protoService.name}.${req.cmd}' response`, data && {
                 size: JSON.stringify(data).length
               });
               if (timeDebug) console.timeEnd(tag);
               return cb(null, data);
             })
             .catch(err => {
-              debug(`service \'${protoService.name}\' response`, {
+              debug(`service '${protoService.name}.${req.cmd}' response`, {
                 error: err
               });
               // remove context in errors from feathers to nats
