@@ -10,6 +10,9 @@ import mixins from './mixins/index';
 import ProxyService from './proxy-service';
 
 const debug = makeDebug('mostly:feathers:application');
+const timeDebug = (process.env.DEBUG || '').indexOf('mostly:*') >= 0;
+const timeTag = '  Microservices application started';
+
 const methods = ['find', 'get', 'create', 'update', 'patch', 'remove'];
 
 const Proto = Uberproto.extend({
@@ -47,7 +50,7 @@ function extend () {
 
 export default {
   init (trans, domain = 'feathers') {
-    console.time('>>> Mostly microservices app started');
+    if (timeDebug) console.time(timeTag);
     Object.assign(this, {
       trans,
       domain,
@@ -110,7 +113,7 @@ export default {
     let protoService = Proto.extend(service);
     protoService.name = protoService.name || location;
 
-    debug(`Registering new service at \`${location}\``);
+    debug(`Registering new service \`${location}\``);
 
     // Add all the mixins
     this.mixins.forEach(fn => fn.call(this, protoService));
@@ -122,12 +125,11 @@ export default {
     // Register the service
     for (var method of this.methods) {
       if (protoService[method]) {
-        debug(` => method \'${protoService.name}.${method}\'`);
         this.trans.add({
           topic: `${this.domain}.${location}`,
           cmd: method
         }, (req, cb) => {
-          debug(`service \'${protoService.name}\' called`, {
+          debug(`${method} \'${protoService.name}\' called`, {
             topic: req.topic,
             cmd: req.cmd,
             params: {
@@ -148,13 +150,14 @@ export default {
           // } else {
           //   action = req.cmd;
           // }
-          console.time(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
+          const tag = `  mostly:feathers:service => ${req.topic}.${req.cmd}`;
+          if (timeDebug) console.time(tag);
           protoService[req.cmd].apply(protoService, [].concat(req.args, req.params))
             .then(data => {
-              debug(`service \'${protoService.name}\' response`, {
-                size: data && JSON.stringify(data).length
+              debug(`service \'${protoService.name}\' response`, data && {
+                size: JSON.stringify(data).length
               });
-              console.timeEnd(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
+              if (timeDebug) console.timeEnd(tag);
               return cb(null, data);
             })
             .catch(err => {
@@ -254,7 +257,11 @@ export default {
 
   start () {
     this.setup();
-    console.timeEnd('>>> Mostly microservices app started');
+    if (timeDebug) {
+      console.log('\n============   APPLICATION STARTED    ============');
+      console.timeEnd(timeTag);
+      console.log('==================================================\n');
+    }
     return this;
   }
 };
