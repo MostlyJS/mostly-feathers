@@ -152,7 +152,7 @@ export default {
           protoService[req.cmd].apply(protoService, [].concat(req.args, req.params))
             .then(data => {
               debug(`service \'${protoService.name}\' response`, {
-                size: data? JSON.stringify(data).length : 0
+                size: data && JSON.stringify(data).length
               });
               console.timeEnd(`  mostly:feathers:service => ${req.topic}.${req.cmd}`);
               return cb(null, data);
