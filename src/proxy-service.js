@@ -25,11 +25,11 @@ export default class ProxyService {
         path: '',
         feathers: {}
       };
-      debug(`proxy service \'${pattern.topic}\' request`,
-        pattern.cmd, JSON.stringify(pattern.params.query)
+      debug(`proxy service '${pattern.topic}.${pattern.cmd}' request`,
+        { query: JSON.stringify(pattern.params.query) }
       );
       this.trans.act(pattern, (err, data) => {
-        debug(` => proxy service \'${pattern.topic}\' response`, {
+        debug(`proxy service '${pattern.topic}.${pattern.cmd}' response`, {
           error: err,
           size: data? JSON.stringify(data).length : 0
         });
