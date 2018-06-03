@@ -3,7 +3,7 @@ MostlyJS with Feathers
 
 [![Build Status](https://travis-ci.org/mostlyjs/mostly-feathers.svg)](https://travis-ci.org/mostlyjs/mostly-feathers)
 
-This module provides quick steps to create [MostlyJS](https://github.com/MostlyJS/mostly-node) microservices with [Feathers](https://feathersjs.com/).
+This module provides quick ways to create [MostlyJS](https://github.com/MostlyJS/mostly-node) microservices with [Feathers](https://feathersjs.com/).
 
 # Usage
 
