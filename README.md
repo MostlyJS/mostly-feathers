@@ -5,6 +5,10 @@ MostlyJS with Feathers
 
 This module provides quick ways to create [MostlyJS](https://github.com/MostlyJS/mostly-node) microservices with [Feathers](https://feathersjs.com/).
 
+# Documentation
+
+Please see the [documentation site](https://mostlyjs.github.io).
+
 # Usage
 
 ## Installation
