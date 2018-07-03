@@ -48,8 +48,8 @@ function route () {
 
 function match (routes, ctx) {
   debug('match', ctx.path);
-  var context = typeof ctx === 'string' || ctx instanceof String ? {path: ctx} : ctx;
-  var root = Array.isArray(routes) ? { path: '/', children: routes } : routes;
+  var context = typeof ctx === 'string' || ctx instanceof String? {path: ctx} : ctx;
+  var root = Array.isArray(routes)? { path: '/', children: routes } : routes;
   var errorRoute = root.children && root.children.filter(x => x.path === '/error')[0];
   var match = matchRoute(root, '', context.path);
   var result, value, done = false;
@@ -147,8 +147,8 @@ function matchRoute (route, baseUrl, path) {
             var childRoute = route.children[childIdx];
             var newPath = path.substr(match.path.length);
             childMatches = matchRoute(childRoute,
-              baseUrl + (match.path === '/' ? '' : match.path),
-              newPath.indexOf('/') === 0 ? newPath : '/' + newPath
+              baseUrl + (match.path === '/'? '' : match.path),
+              newPath.indexOf('/') === 0? newPath : '/' + newPath
             );
           }
           var childMatch = childMatches.next();
@@ -184,12 +184,12 @@ function matchPath (end, routePath, urlPath) {
   for (var i = 0; i < m.length; i++) {
     params[regexp.keys[i].name] = m[i] !== undefined? decode(m[i]) : undefined;
   }
-  return { path: path === '' ? '/' : path, params:params };
+  return { path: path === ''? '/' : path, params:params };
 }
 
 
 function decode (val) {
-  return typeof val !== 'string' ? val : decodeURIComponent(val);
+  return typeof val !== 'string'? val : decodeURIComponent(val);
 }
 
 

@@ -23,7 +23,7 @@ const Proto = Uberproto.extend({
 function adapt (fn) {
   return function adapter (ctx){
     return Promise.resolve(fn(ctx, ctx.response, ctx.next)).then(x => {
-      return x === undefined && fn.length < 3 ? false : x;
+      return x === undefined && fn.length < 3? false : x;
     });
   };
 }
@@ -183,7 +183,7 @@ export default {
       .slice(1)
       .reduce(function (middleware, arg) {
         if (typeof arg === 'function') {
-          middleware[service ? 'after' : 'before'].push(arg);
+          middleware[service? 'after' : 'before'].push(arg);
         } else if (!service) {
           service = arg;
         } else {
@@ -212,7 +212,7 @@ export default {
         this.routes.children.push(route(path, { __handler: fn }, fn.routes.children));
         fn.emit('mount', this);
       } else {
-        if (!path) path = fn.length >= 3 ? '*' : '/';
+        if (!path) path = fn.length >= 3? '*' : '/';
         this.routes.children.push(route(path, { __handler: fn }, adapt(fn)));
       }
     };

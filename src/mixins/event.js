@@ -24,7 +24,7 @@ export default function (service) {
     service.mixin(EventEmitter.prototype);
   }
 
-  service._serviceEvents = Array.isArray(service.events) ? service.events.slice() : [];
+  service._serviceEvents = Array.isArray(service.events)? service.events.slice() : [];
 
   // Pass the Rubberduck error event through
   // TODO deal with error events properly
@@ -46,7 +46,7 @@ export default function (service) {
       emitter.on(eventName, function (results, args) {
         if (!results[0]) { // callback without error
           const hook = hookObject(method, 'after', args);
-          const data = Array.isArray(results[1]) ? results[1] : [ results[1] ];
+          const data = Array.isArray(results[1])? results[1] : [ results[1] ];
 
           hook.app = app;
           data.forEach(current => service.emit(event, current, hook));
