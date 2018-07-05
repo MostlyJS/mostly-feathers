@@ -29,7 +29,7 @@ function route () {
   if (args.length) {
     children = (children || []).concat(args);
   }
-  var result = path? extend({}, ctx, {path:path}) : extend({}, ctx);
+  var result = path? extend({}, ctx, { path }) : extend({}, ctx);
   if (!result.path) {
     result.path = '/';
   }
@@ -48,7 +48,7 @@ function route () {
 
 function match (routes, ctx) {
   debug('match', ctx.path);
-  var context = typeof ctx === 'string' || ctx instanceof String? {path: ctx} : ctx;
+  var context = typeof ctx === 'string' || ctx instanceof String? { path: ctx } : ctx;
   var root = Array.isArray(routes)? { path: '/', children: routes } : routes;
   var errorRoute = root.children && root.children.filter(x => x.path === '/error')[0];
   var match = matchRoute(root, '', context.path);
