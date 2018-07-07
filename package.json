@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "debug": "^2.6.6",
-    "esm": "^3.0.14",
+    "esm": "^3.0.63",
     "feathers-commons": "^0.8.7",
     "feathers-errors": "^2.8.1",
     "path-to-regexp": "^1.7.0",

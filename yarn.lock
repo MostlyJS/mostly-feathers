@@ -910,9 +910,9 @@ eslint@^3.0.0:
     text-table "~0.2.0"
     user-home "^2.0.0"
 
-esm@^3.0.14:
-  version "3.0.14"
-  resolved "https://registry.npmjs.org/esm/-/esm-3.0.14.tgz#a9a79b7348c8708050ff42499b5ecbec019d08dc"
+esm@^3.0.63:
+  version "3.0.63"
+  resolved "https://registry.npmjs.org/esm/-/esm-3.0.63.tgz#9bae009df97fea8f5945290972d011924bbec499"
 
 espree@^3.4.0:
   version "3.4.2"
