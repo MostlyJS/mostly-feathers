@@ -1,6 +1,6 @@
-import rubberduck from 'rubberduck';
-import { EventEmitter } from 'events';
-import { hooks } from 'feathers-commons';
+const rubberduck = require('rubberduck');
+const { EventEmitter } = require('events');
+const { hooks } = require('feathers-commons');
 
 const hookObject = hooks.hookObject;
 const eventMappings = {
@@ -14,7 +14,7 @@ function upperCase (name) {
   return name.charAt(0).toUpperCase() + name.substring(1);
 }
 
-export default function (service) {
+module.exports = function (service) {
   const app = this;
   const isEmitter = typeof service.on === 'function' &&
     typeof service.emit === 'function';
@@ -56,4 +56,4 @@ export default function (service) {
       });
     }
   });
-}
+};

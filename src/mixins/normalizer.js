@@ -1,6 +1,6 @@
-import { getArguments } from 'feathers-commons';
+const { getArguments } = require('feathers-commons');
 
-export default function (service) {
+module.exports = function (service) {
   if (typeof service.mixin === 'function') {
     const mixin = {};
 
@@ -14,4 +14,4 @@ export default function (service) {
 
     service.mixin(mixin);
   }
-}
+};

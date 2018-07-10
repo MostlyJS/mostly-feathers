@@ -1,8 +1,8 @@
-import promise from './promise';
-import event from './event';
-import normalizer from './normalizer';
+const promise = require('./promise');
+const event = require('./event');
+const normalizer = require('./normalizer');
 
-export default function () {
+module.exports = function () {
   const mixins = [promise, event, normalizer];
 
   // Override push to make sure that normalize is always the last
@@ -13,4 +13,4 @@ export default function () {
   };
 
   return mixins;
-}
+};

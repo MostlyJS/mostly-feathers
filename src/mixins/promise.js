@@ -13,7 +13,7 @@ function wrapper () {
   return result;
 }
 
-export default function (service) {
+module.exports = function (service) {
   if (typeof service.mixin === 'function') {
     const mixin = {};
 
@@ -25,4 +25,4 @@ export default function (service) {
 
     service.mixin(mixin);
   }
-}
+};
