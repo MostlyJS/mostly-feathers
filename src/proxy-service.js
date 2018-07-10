@@ -1,13 +1,9 @@
-import query from 'qs';
-import makeDebug from 'debug';
-import { stripSlashes } from 'feathers-commons';
-import { convert } from 'feathers-errors';
-
-import { defaultMethods } from './helpers';
+const makeDebug = require('debug');
+const { stripSlashes } = require('feathers-commons');
 
 const debug = makeDebug('mostly:feathers:proxy-service');
 
-export default class ProxyService {
+class ProxyService {
   constructor (settings = { id: '_id'}) {
     this.id = settings.id || '_id';
     this.name = stripSlashes(settings.name);
@@ -141,3 +137,5 @@ export default class ProxyService {
     };
   }
 }
+
+module.exports = ProxyService;

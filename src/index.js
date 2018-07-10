@@ -1,12 +1,16 @@
-import feathers from './feathers';
-import ProxyService from './proxy-service';
-import Service from './service';
-import { defaultMethods, isAction } from './helpers';
+const feathers = require('./feathers');
+const ProxyService = require('./proxy-service');
+const Service = require('./service');
+const { defaultMethods, isAction } = require('./helpers');
 
 const version = require('../package.json').version;
 
-export default function createApplication (...args) {
+module.exports = function createApplication (...args) {
   return feathers(...args);
-}
+};
 
-export { ProxyService, Service, version, defaultMethods, isAction };
+module.exports.ProxyService = ProxyService;
+module.exports.Service = Service;
+module.exports.version = version;
+module.exports.defaultMethods = defaultMethods;
+module.exports.isAction = isAction;

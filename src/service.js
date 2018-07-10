@@ -1,7 +1,7 @@
-import assert from 'assert';
-import makeDebug from 'debug';
-import fp from 'mostly-func';
-import { defaultMethods, isAction } from './helpers';
+const assert = require('assert');
+const makeDebug = require('debug');
+const fp = require('mostly-func');
+const { defaultMethods, isAction } = require('./helpers');
 
 const debug = makeDebug('mostly:feathers:service');
 
@@ -9,7 +9,7 @@ const defaultOptions = {
   name: 'service'
 };
 
-export default class Service {
+class Service {
   constructor (options) {
     this.options = fp.assignAll(defaultOptions, options);
     this.name = this.options.name;
@@ -149,3 +149,5 @@ export default class Service {
   _patch (id, data, params) { throw new Error('Not implemented'); }
   _remove (id, params) { throw new Error('Not implemented'); }
 }
+
+module.exports = Service;

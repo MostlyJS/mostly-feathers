@@ -1,13 +1,13 @@
-import assert from 'assert';
-import makeDebug from 'debug';
-import { stripSlashes } from 'feathers-commons';
-import fp from 'mostly-func';
-import Uberproto from 'uberproto';
-import util from 'util';
+const assert = require('assert');
+const makeDebug = require('debug');
+const { stripSlashes } = require('feathers-commons');
+const fp = require('mostly-func');
+const Uberproto = require('uberproto');
+const util = require('util');
 
-import route from './route';
-import mixins from './mixins/index';
-import ProxyService from './proxy-service';
+const route = require('./route');
+const mixins = require('./mixins/index');
+const ProxyService = require('./proxy-service');
 
 const debug = makeDebug('mostly:feathers:application');
 const timeDebug = (process.env.DEBUG || '').indexOf('mostly:*') >= 0;
@@ -48,7 +48,7 @@ function extend () {
   return out;
 }
 
-export default {
+module.exports = {
   init (trans, domain = 'feathers') {
     if (timeDebug) console.time(timeTag);
     Object.assign(this, {

@@ -1,5 +1,5 @@
-import makeDebug from 'debug';
-import pathToRegExp from 'path-to-regexp';
+const makeDebug = require('debug');
+const pathToRegExp = require('path-to-regexp');
 
 const debug = makeDebug('mostly:feathers:route');
 
@@ -169,6 +169,7 @@ function matchRoute (route, baseUrl, path) {
   };
 }
 
+var cache = {};
 
 function matchPath (end, routePath, urlPath) {
   var key = routePath + '|' + end;
@@ -187,11 +188,9 @@ function matchPath (end, routePath, urlPath) {
   return { path: path === ''? '/' : path, params:params };
 }
 
-
 function decode (val) {
   return typeof val !== 'string'? val : decodeURIComponent(val);
 }
-
 
 function extend (out) {
   for (var src, i=1; i<arguments.length; i++) {
@@ -204,11 +203,9 @@ function extend (out) {
   return out;
 }
 
-var cache = {};
-
 route.route = route;
 route.match = match;
 route.match.matchRoute = matchRoute;
 route.match.matchPath = matchPath;
 
-export default route;
+module.exports = route;

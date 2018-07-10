@@ -1,4 +1,4 @@
-import app from './application';
+const app = require('./application');
 
 /**
  * Create a Feathers application.
@@ -6,7 +6,7 @@ import app from './application';
  * @return {Function}
  * @api public
  */
-export default function createApplication (trans, domain) {
+module.exports = function createApplication (trans, domain) {
   app.init(trans, domain);
   return app;
-}
+};
