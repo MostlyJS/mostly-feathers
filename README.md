@@ -24,9 +24,9 @@ Convert your Feathers APIs into microservices is easy enough.
 Your existing Feathers code
 ```javascript
 // service.js
-import memory from 'feathers-memory';
+const memory = require('feathers-memory');
 
-export default function() {
+module.exports = function() {
   const app = this;
 
   // initialize service
@@ -37,10 +37,10 @@ export default function() {
 
 Wrapping it as standalone server
 ```javascript
-import nats from 'nats';
-import mostly from 'mostly-node';
-import feathers from 'mostly-feathers';
-import service from './service';
+const nats = require('nats');
+const mostly = require('mostly-node');
+const feathers = require('mostly-feathers');
+const service = require('./service');
 
 const trans = new mostly(nats.connect());
 trans.ready(() => {
